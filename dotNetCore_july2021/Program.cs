@@ -1,100 +1,46 @@
 ﻿using System;
+using System.Numerics;
 using System.Text.RegularExpressions;
 
 namespace dotNetCore_july2021
 {
     class Program
     {
-        static void PrintIsValid(string input, string pattern)
+        static void ThreeToWords(string part)
         {
-            Regex re = new Regex($@"{pattern}");
 
-            Console.WriteLine($"{input} matches {pattern}: {re.IsMatch(input)}");
+            Console.WriteLine(part);
         }
 
         static void Main(string[] args)
         {
-            PrintIsValid("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", @"^a{3,}$");
-            PrintIsValid("1324", @"^[0-9]{3}$");
-            // mark@gmail.ca
-            // PrintIsValid("...", @"^\.{3}$");
-            PrintIsValid("mark.smith@gmail.gv.ca",
-                @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$");
+            string input = "1850000000000000000000000000000000";
+            BigInteger bi = BigInteger.Parse(input);
 
-            /*
-            ConsoleKeyInfo cki;
-            string customRegEx = "";
-            string customVal = ;
-            Console.WriteLine("Enter a regular expression (or press ENTER to use the default):");
-            cki = Console.ReadKey();
-            switch (cki.Key)
+            string num = bi.ToString("N0");
+
+            Console.WriteLine(num);
+
+            string[] partsByThree = num.Split(",");
+
+            foreach (var part in partsByThree)
             {
-                case ConsoleKey.Enter: customRegEx = "^[a - z] +$"; break;
-                case ConsoleKey.Escape: break;
-                default: customRegEx = Console.ReadLine(); break;
+                ThreeToWords (part);
             }
 
-
-            Console.WriteLine("Enter some input: ");
-            customVal = Console.ReadLine();
-            PrintIsValid(customVal, customRegEx);
-             */
-
             /*
-            ConsoleKeyInfo cki;
-            string customRegEx = string.Empty;
-            string customVal = string.Empty;
-            while (true)
-            {
+            string str = "Hello .Net Core";
+            
+            string res = str.FlipFirstLetterCase();
+            string res2 = Helper.FlipFirstLetterCase(str);
 
-                Console.WriteLine("Enter a regular expression "+
-                    " (or press ENTER to use the default):");
+            Console.WriteLine(res2 + " " + res);
 
-                customRegEx = Console.ReadLine();
-                
-                if (customRegEx == "")
-                {
-                    customRegEx = @"^[a-z]+$";
-                }
-
-                Console.WriteLine($"customRegEx = {customRegEx}");
-
-                Console.WriteLine("Press ESC to end or any key to try again.");
-                cki = Console.ReadKey();
-
-                if (cki.Key == ConsoleKey.Escape)
-                {
-                    break;
-                }
-            }
-            */
-
-            /*
-            string path1 = "c:\\Documents\\dot_net_core.doc";
-            string path2 = @"c:\Documents\dot_net_core.doc";
-
-            //Regex re = new Regex(@"^[a-zA-Z_]+$");
-            //Console.WriteLine(re.IsMatch("ApP_l_Es"));
-            PrintIsValid("Apples_123", @"^[a-zA-Z_0-9]+$");
-            */
-
-            /*
-            ConsoleKeyInfo cki;
-
-            while (true)
-            {
-
-                Console.WriteLine("do something........");
-                
-                Console.WriteLine("Press ESC to end or any key to try again.");
-                cki = Console.ReadKey();
-
-                if (cki.Key == ConsoleKey.Escape)
-                {
-                    break;
-                }
-            }
+            BigInteger num = new BigInteger(123);
+            num.ToWords();
             */
         }
+
+
     }
 }
