@@ -46,7 +46,9 @@ namespace dotNetCore_july2021
                 string tens = tensArr[ind];
                 string single = unitsMap[ind2];
 
-                res += string.IsNullOrEmpty(res) ? tens : " and " + tens + " " + single;
+                res += string.IsNullOrEmpty(res) ? 
+                    string.IsNullOrEmpty(tens) ? single : tens + " " + single
+                    : " and " + tens + " " + single;
             }
 
             return res;
@@ -54,11 +56,7 @@ namespace dotNetCore_july2021
 
         static void Main(string[] args)
         {
-            char ch = 'a';
-
-            Console.WriteLine((int)ch);
-
-            string input = "829000000000000000000000000000000000";
+            string input = "8290000000000000000000000000000000";
             BigInteger bi = BigInteger.Parse(input);
 
             string num = bi.ToString("N0");
@@ -67,11 +65,17 @@ namespace dotNetCore_july2021
 
             string[] partsByThree = num.Split(",");
 
+            string ourNumber = string.Empty;
+
             for(var i = 0;  i < partsByThree.Length; ++i)
             {
-                //Console.WriteLine($"{ThreeToWords(partsByThree[i])} - {suffixesArr[partsByThree.Length - i - 1]}");
-                Console.WriteLine($"{partsByThree[i]} {ThreeToWords(partsByThree[i])}");
+                string str = ThreeToWords(partsByThree[i]);
+
+                str = string.IsNullOrEmpty(str) ? "" 
+                    : str + " " + suffixesArr[partsByThree.Length - i - 1];
+                ourNumber += str + " ";
             }
+            Console.WriteLine($"ourNumber is {ourNumber}");
 
             /*
             string str = "Hello .Net Core";
