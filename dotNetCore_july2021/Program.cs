@@ -1,95 +1,43 @@
 ﻿using System;
 using System.Numerics;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace dotNetCore_july2021
 {
     class Program
     {
-        private static readonly String[] unitsMap = new[] { 
-            "", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", 
-            "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", 
-            "seventeen", "eighteen", "nineteen"
-        };
-
-        private static readonly String[] tensArr = new string[] {
-            "", "ten", "twenty", "thirty", "fourty", "fifty", "sixty", "seventy", "eighty", "ninty" };
-
-        private static readonly string[] suffixesArr = new string[] { "", "thousand", "million", "billion", 
-            "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", 
-            "nonillion", "decillion", "undecillion", "duodecillion", "tredecillion", 
-            "Quattuordecillion", "Quindecillion", "Sexdecillion", "Septdecillion", 
-            "Octodecillion", "Novemdecillion", "Vigintillion" };
-
-        static string ThreeToWords(string part)
-        {
-            part = part.PadLeft(3, '0');
-            string res = string.Empty;
-
-            if(part[0] != '0') // 1-9
-            {
-                res += unitsMap[Convert.ToInt32(part[0].ToString())] 
-                    + " hundred";
-            }
-
-            if (part[1] == '1')
-            {
-                int ind = Convert.ToInt32(part[1].ToString() + part[2].ToString());
-                string teen = unitsMap[ind];
-
-                res += string.IsNullOrEmpty(res) ? teen : " and " + teen;
-            }
-            else
-            {
-                int ind = Convert.ToInt32(part[1].ToString());
-                int ind2 = Convert.ToInt32(part[2].ToString());
-                string tens = tensArr[ind];
-                string single = unitsMap[ind2];
-
-                res += string.IsNullOrEmpty(res) ? 
-                    string.IsNullOrEmpty(tens) ? single : tens + " " + single
-                    : " and " + tens + " " + single;
-            }
-
-            return res;
-        }
-
         static void Main(string[] args)
         {
-            string input = "8290000000000000000000000000000000";
-            BigInteger bi = BigInteger.Parse(input);
+            string str = "Hello"; // "Hello"
+            str += " "; // "Hello" "Hello "
+            str += "Word"; // "Hello" "Hello " "Hello Word"
 
-            string num = bi.ToString("N0");
+            Console.WriteLine(str);
 
-            Console.WriteLine(num);
+            StringBuilder sb = new StringBuilder("Hello");
+            sb.Append(" ");
+            sb.Append("Word");
 
-            string[] partsByThree = num.Split(",");
+            // 2147483647
+            Console.WriteLine(sb.MaxCapacity);
 
-            string ourNumber = string.Empty;
+            string passage = @"I do not like them
+In a house.
+I do not like them
+With a mouse.
+I do not like them
+Here or there.
+I do not like them
+Anywhere.
+I do not like green eggs and ham.
+I do not like them, Sam - I - am.";
 
-            for(var i = 0;  i < partsByThree.Length; ++i)
-            {
-                string str = ThreeToWords(partsByThree[i]);
+            StringBuilder sbp = new StringBuilder(passage);
+            sbp.Replace("not ", null);
 
-                str = string.IsNullOrEmpty(str) ? "" 
-                    : str + " " + suffixesArr[partsByThree.Length - i - 1];
-                ourNumber += str + " ";
-            }
-            Console.WriteLine($"ourNumber is {ourNumber}");
+            Console.WriteLine(sbp.ToString());
 
-            /*
-            string str = "Hello .Net Core";
-            
-            string res = str.FlipFirstLetterCase();
-            string res2 = Helper.FlipFirstLetterCase(str);
-
-            Console.WriteLine(res2 + " " + res);
-
-            BigInteger num = new BigInteger(123);
-            num.ToWords();
-            */
         }
-
-
     }
 }
