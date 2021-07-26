@@ -5,96 +5,69 @@ namespace dotNetCore_july2021
 {
     class Program
     {
-        static void PrintIsValid(string input, string pattern)
-        {
-            Regex re = new Regex($@"{pattern}");
-
-            Console.WriteLine($"{input} matches {pattern}: {re.IsMatch(input)}");
-        }
-
         static void Main(string[] args)
         {
-            PrintIsValid("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", @"^a{3,}$");
-            PrintIsValid("1324", @"^[0-9]{3}$");
-            // mark@gmail.ca
-            // PrintIsValid("...", @"^\.{3}$");
-            PrintIsValid("mark.smith@gmail.gv.ca",
-                @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$");
+            var t =
+                Tuple.Create(101, "Mark", "mark@gmail.com", "123-45678");
+            Console.WriteLine($"{nameof(t)} : {t.Item1} {t.Item2} {t.Item3} {t.Item4}");
+            Console.WriteLine(t.ToString());
 
-            /*
-            ConsoleKeyInfo cki;
-            string customRegEx = "";
-            string customVal = ;
-            Console.WriteLine("Enter a regular expression (or press ENTER to use the default):");
-            cki = Console.ReadKey();
-            switch (cki.Key)
+            (double, int, string) t2 = (3.14, 7, "Hello");
+            Console.WriteLine($"{t2.Item1} {t2.Item2} {t2.Item3}");
+
+            (int id, string name, string email) t3 =
+                (102, "Lucy", "lucy@gmail.com");
+            Console.WriteLine($"{t3.id} {t3.name} {t3.email}");
+
+            (int a, byte b) l = (5, 7);
+            (long a, int b) r = (5, 7);
+            Console.WriteLine( l == r );
+            Console.WriteLine( l != r );
+
+            (string a, string b) l1 = ("5", "7");
+            (string a, string b) r1 = ("5", "7");
+            Console.WriteLine(l1 == r1);
+
+            // [] {-1, -1, -1, -1, -1, -1, -1, -1, -1} => (-1, -1)
+            // [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} => (0, 0)
+            var arr = new[] { -7, 0, 75, 100, 95 };
+            var (min, max) = minMaxValues(arr);
+            
+            Console.WriteLine($"min = {min}, max = {max}");
+
+
+            var obj = new { id = 103, name = "Tracy", email = "tracy@gmail.com"};
+            var arrObj = new[] {
+                new { id = 104, name = "John", email = "john@gmail.com"},
+                new { id = 105, name = "Mary", email = "mary@gmail.com"}
+            };
+
+            Console.WriteLine($"{obj.id} {obj.name} {obj.email}");
+
+            foreach(var o in arrObj)
+                Console.WriteLine($"{o.id} {o.name} {o.email}");
+
+            Console.WriteLine(arrObj[1].name);
+        }
+
+        public static (int min, int max) minMaxValues(int[] input)
+        {
+            // '==' vs 'is' with null
+            if(input is null || input.Length == 0)
             {
-                case ConsoleKey.Enter: customRegEx = "^[a - z] +$"; break;
-                case ConsoleKey.Escape: break;
-                default: customRegEx = Console.ReadLine(); break;
+                throw new ArgumentException("Cannot find min/max ...");
             }
 
+            var min = int.MaxValue;
+            var max = int.MinValue;
 
-            Console.WriteLine("Enter some input: ");
-            customVal = Console.ReadLine();
-            PrintIsValid(customVal, customRegEx);
-             */
-
-            /*
-            ConsoleKeyInfo cki;
-            string customRegEx = string.Empty;
-            string customVal = string.Empty;
-            while (true)
+            foreach (var i in input)
             {
-
-                Console.WriteLine("Enter a regular expression "+
-                    " (or press ENTER to use the default):");
-
-                customRegEx = Console.ReadLine();
-                
-                if (customRegEx == "")
-                {
-                    customRegEx = @"^[a-z]+$";
-                }
-
-                Console.WriteLine($"customRegEx = {customRegEx}");
-
-                Console.WriteLine("Press ESC to end or any key to try again.");
-                cki = Console.ReadKey();
-
-                if (cki.Key == ConsoleKey.Escape)
-                {
-                    break;
-                }
+                if (i < min) min = i;
+                if (i > max) max = i;
             }
-            */
 
-            /*
-            string path1 = "c:\\Documents\\dot_net_core.doc";
-            string path2 = @"c:\Documents\dot_net_core.doc";
-
-            //Regex re = new Regex(@"^[a-zA-Z_]+$");
-            //Console.WriteLine(re.IsMatch("ApP_l_Es"));
-            PrintIsValid("Apples_123", @"^[a-zA-Z_0-9]+$");
-            */
-
-            /*
-            ConsoleKeyInfo cki;
-
-            while (true)
-            {
-
-                Console.WriteLine("do something........");
-                
-                Console.WriteLine("Press ESC to end or any key to try again.");
-                cki = Console.ReadKey();
-
-                if (cki.Key == ConsoleKey.Escape)
-                {
-                    break;
-                }
-            }
-            */
+            return (min, max);
         }
     }
 }
