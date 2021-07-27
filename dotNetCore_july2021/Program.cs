@@ -1,73 +1,128 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿//using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Text.Json;
 
 namespace dotNetCore_july2021
 {
+    public class Item
+    {
+        public string id { get; set; }
+        public string label { get; set; }
+    }
+
+    public class Menu
+    {
+        public string header { get; set; }
+        public List<Item> items { get; set; }
+    }
+
+    public class Top
+    {
+        public Menu menu { get; set; }
+
+        public void Print()
+        {
+            Console.WriteLine(menu.header);
+            foreach (var i in menu.items)
+            {
+                if (i != null)
+                {
+                    if (i.id != null)
+                        Console.WriteLine(i.id);
+                    if (i.label != null)
+                        Console.WriteLine(" " + i.label);
+                }
+                else
+                    Console.WriteLine("null");
+
+            }
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
         {
-            var t =
-                Tuple.Create(101, "Mark", "mark@gmail.com", "123-45678");
-            Console.WriteLine($"{nameof(t)} : {t.Item1} {t.Item2} {t.Item3} {t.Item4}");
-            Console.WriteLine(t.ToString());
+            // string json = Console.ReadLine();
+            string file = @"data.json";
 
-            (double, int, string) t2 = (3.14, 7, "Hello");
-            Console.WriteLine($"{t2.Item1} {t2.Item2} {t2.Item3}");
+            string jsonString = File.ReadAllText(file);
 
-            (int id, string name, string email) t3 =
-                (102, "Lucy", "lucy@gmail.com");
-            Console.WriteLine($"{t3.id} {t3.name} {t3.email}");
+            // Console.WriteLine(json);
 
-            (int a, byte b) l = (5, 7);
-            (long a, int b) r = (5, 7);
-            Console.WriteLine( l == r );
-            Console.WriteLine( l != r );
-
-            (string a, string b) l1 = ("5", "7");
-            (string a, string b) r1 = ("5", "7");
-            Console.WriteLine(l1 == r1);
-
-            // [] {-1, -1, -1, -1, -1, -1, -1, -1, -1} => (-1, -1)
-            // [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} => (0, 0)
-            var arr = new[] { -7, 0, 75, 100, 95 };
-            var (min, max) = minMaxValues(arr);
-            
-            Console.WriteLine($"min = {min}, max = {max}");
+            Top obj = JsonSerializer.Deserialize<Top>(jsonString);
+            //Top obj = JsonConvert.DeserializeObject<Top>(jsonString);
 
 
-            var obj = new { id = 103, name = "Tracy", email = "tracy@gmail.com"};
-            var arrObj = new[] {
-                new { id = 104, name = "John", email = "john@gmail.com"},
-                new { id = 105, name = "Mary", email = "mary@gmail.com"}
-            };
+            obj.Print();
 
-            Console.WriteLine($"{obj.id} {obj.name} {obj.email}");
+            /*
+            // File f;
+            // Path p;
 
-            foreach(var o in arrObj)
-                Console.WriteLine($"{o.id} {o.name} {o.email}");
+            string file = @"d:\temp\file.txt";
 
-            Console.WriteLine(arrObj[1].name);
+            Console.WriteLine(File.Exists(file));
+            Console.WriteLine(Path.GetFileName(file));
+            Console.WriteLine(Path.GetDirectoryName(file));
+            Console.WriteLine(Path.GetFileNameWithoutExtension(file));
+            Console.WriteLine(Path.GetExtension(file));
+
+            for (int i = 0; i < 5; i++)
+            {
+                string res = Path.GetRandomFileName();
+                Console.WriteLine("Temp path: " + res);
+            }
+
+            string file1 = @"d:\temp\file1.qwerty";
+
+            using (FileStream fs = File.Create(file1))
+            {
+                AddText(fs, "Line #1\n");
+                AddText(fs, "Line #2\n");
+                AddText(fs, "Line #3\n");
+                AddText(fs, "Line #4\n");
+            }
+
+            Console.WriteLine("----------------------------------------");
+
+            using (FileStream fs = File.OpenRead(file1))
+            {
+                byte[] bArr = new byte[1024];
+                var temp = new UTF8Encoding(true);
+
+                while (fs.Read(bArr, 0, bArr.Length) > 0)
+                {
+                    Console.WriteLine(temp.GetString(bArr));
+                }
+            }
+
+            //if(File.Exists(file1))
+            //{
+            //    File.Delete(file1);
+            //}
+
+            Console.WriteLine("----------------------------------------");
+
+            var arrStr = File.ReadAllLines(file1);
+
+            foreach (var s in arrStr)
+            {
+                Console.WriteLine(s);
+            }
+
+            // File.WriteAllLines(file1, new string[] { "Hello", "Files" });
+            File.AppendAllLines(file1, new string[] { "Hello", "Files" });
+            */
         }
 
-        public static (int min, int max) minMaxValues(int[] input)
+        private static void AddText(FileStream fs, string line)
         {
-            // '==' vs 'is' with null
-            if(input is null || input.Length == 0)
-            {
-                throw new ArgumentException("Cannot find min/max ...");
-            }
-
-            var min = int.MaxValue;
-            var max = int.MinValue;
-
-            foreach (var i in input)
-            {
-                if (i < min) min = i;
-                if (i > max) max = i;
-            }
-
-            return (min, max);
+            byte[] arr = new UTF8Encoding(true).GetBytes(line);
+            fs.Write(arr, 0, arr.Length);
         }
     }
 }
