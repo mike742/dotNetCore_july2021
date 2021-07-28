@@ -82,10 +82,11 @@ namespace dotNetCore_july2021
 
         public static T FromXmlFile<T>(string file)
         {
-            using (StringReader sr = new StringReader(file))
-            {
-                XmlSerializer xmls = new XmlSerializer(typeof(T));
+            XmlSerializer xmls = new XmlSerializer(typeof(T));
+            var xmlContent = File.ReadAllText(file);
 
+            using (StringReader sr = new StringReader(xmlContent))
+            {
                 return (T)xmls.Deserialize(sr);
             }
         }
