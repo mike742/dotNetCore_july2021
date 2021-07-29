@@ -5,79 +5,61 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Xml.Serialization;
+using static System.Console;
 
 namespace dotNetCore_july2021
 {
-    public class Item
+    [XmlInclude(typeof(Rectangle))]
+    [XmlInclude(typeof(Circle))]
+    public class Shape
     {
-        public string id { get; set; }
-        public string label { get; set; }
+        public virtual string Color { get; set; }
+        public virtual double Area { get; }
     }
 
-    public class Menu
+    public interface IShape
     {
-        public string header { get; set; }
-        [XmlElement]
-        public List<Item> items { get; set; }
+        string Color { get; set; }
+        double Area { get; }
     }
 
-    public class Top
+    public class Rectangle : Shape
     {
-        public Menu menu { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
+        public override string Color { get; set; }
+        public override double Area => Width * Height;
+    }
 
-        public void Print()
-        {
-            Console.WriteLine(menu.header);
-            foreach (var i in menu.items)
-            {
-                if (i != null)
-                {
-                    if (i.id != null)
-                        Console.WriteLine(i.id);
-                    if (i.label != null)
-                        Console.WriteLine(" " + i.label);
-                }
-                else
-                    Console.WriteLine("null");
-
-            }
-        }
+    public class Circle : Shape
+    {
+        public double Radius { get; set; }
+        public override string Color { get; set; }
+        public override double Area => Math.PI * Math.Pow(Radius, 2);
     }
 
     class Program
     {
         static void Main(string[] args)
         {
-            // string json = Console.ReadLine();
-            string file = @"data.json";
-
-            string jsonString = File.ReadAllText(file);
-
-            // Console.WriteLine(json);
-
-            Top obj = JsonSerializer.Deserialize<Top>(jsonString);
-            //Top obj = JsonConvert.DeserializeObject<Top>(jsonString);
-
-
-            obj.Print();
-
-            /*
-            var xs = new XmlSerializer(typeof(Top));
-            string xmlFile = @"data.xml";
-
-            using (FileStream fs = File.Create(xmlFile))
+            var listOfShapes = new List<Shape>
             {
-                xs.Serialize(fs, obj);
+                new Circle { Color = "Red", Radius = 2.5 },
+                new Rectangle { Color = "Blue", Height = 20.0, Width = 10.0 },
+                new Circle { Color = "Green", Radius = 8 },
+                new Circle { Color = "Purple", Radius = 12.3 },
+                new Rectangle { Color = "Blue", Height = 45.0, Width = 18.0 }
+            };
+
+            string xmlFile = "shapes.xml";
+
+            ToXmlFile(xmlFile, listOfShapes);
+
+
+            foreach (Shape item in listOfShapes)
+            {
+                WriteLine($"{item.GetType().Name} is {item.Color} and has an area of { item.Area}");
             }
-            */
-
-            ToXmlFile("sample1.xml", obj);
-
-            Console.WriteLine("==================================");
-
-            var resObj = FromXmlFile<Top>("sample1.xml");
-            resObj.Print();
-
         }
 
         public static T FromXmlFile<T>(string file)
