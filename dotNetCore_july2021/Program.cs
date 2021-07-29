@@ -55,8 +55,11 @@ namespace dotNetCore_july2021
 
             ToXmlFile(xmlFile, listOfShapes);
 
+            List<Shape> loadedShapesXml =
+                 FromXmlFile<List<Shape>>(xmlFile);
 
-            foreach (Shape item in listOfShapes)
+
+            foreach (Shape item in loadedShapesXml)
             {
                 WriteLine($"{item.GetType().Name} is {item.Color} and has an area of { item.Area}");
             }
