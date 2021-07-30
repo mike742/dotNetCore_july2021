@@ -17,14 +17,27 @@ namespace dotNetCore_july2021
         static void Main(string[] args)
         {
 
+            
+
+
             // string sk = ProtectedClass.GenerateSecretKey();
             string sk = @"\SBO;FK`y4O_fdi8\cj=]uyKnoUC0C\<";
+
+            var res = Cripto.Cripto.EncryptString(sk, "Admin");
+
+            WriteLine(res);
+
+
 
             WriteLine($"sk = {sk}");
 
             string eStr = ProtectedClass.EncryptString(sk, "1234-5678-9012-3456");
 
             WriteLine(eStr);
+
+            string dStr = ProtectedClass.DecryptString(sk, eStr);
+
+            WriteLine(dStr);
 
             WriteLine("=================================================");
 
