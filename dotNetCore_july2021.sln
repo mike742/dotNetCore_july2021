@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetCore_july2021", "dotNetCore_july2021\dotNetCore_july2021.csproj", "{2BA229D3-16AE-4EAC-8A9C-EA69E5A0EF0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetCore_july2021", "dotNetCore_july2021\dotNetCore_july2021.csproj", "{2BA229D3-16AE-4EAC-8A9C-EA69E5A0EF0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Protector", "Protector\Protector.csproj", "{953D5C11-6481-4E0A-9C21-09406317AA16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{2BA229D3-16AE-4EAC-8A9C-EA69E5A0EF0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BA229D3-16AE-4EAC-8A9C-EA69E5A0EF0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BA229D3-16AE-4EAC-8A9C-EA69E5A0EF0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{953D5C11-6481-4E0A-9C21-09406317AA16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{953D5C11-6481-4E0A-9C21-09406317AA16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{953D5C11-6481-4E0A-9C21-09406317AA16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{953D5C11-6481-4E0A-9C21-09406317AA16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

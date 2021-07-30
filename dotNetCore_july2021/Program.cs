@@ -1,7 +1,9 @@
 ﻿//using Newtonsoft.Json;
+using Protector;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Xml.Serialization;
@@ -9,60 +11,53 @@ using static System.Console;
 
 namespace dotNetCore_july2021
 {
-    [XmlInclude(typeof(Rectangle))]
-    [XmlInclude(typeof(Circle))]
-    public class Shape
-    {
-        public virtual string Color { get; set; }
-        public virtual double Area { get; }
-    }
-
-    public interface IShape
-    {
-        string Color { get; set; }
-        double Area { get; }
-    }
-
-    public class Rectangle : Shape
-    {
-        public double Width { get; set; }
-        public double Height { get; set; }
-        public override string Color { get; set; }
-        public override double Area => Width * Height;
-    }
-
-    public class Circle : Shape
-    {
-        public double Radius { get; set; }
-        public override string Color { get; set; }
-        public override double Area => Math.PI * Math.Pow(Radius, 2);
-    }
-
+    
     class Program
     {
         static void Main(string[] args)
         {
-            var listOfShapes = new List<Shape>
+
+            // string sk = ProtectedClass.GenerateSecretKey();
+            string sk = @"\SBO;FK`y4O_fdi8\cj=]uyKnoUC0C\<";
+
+            WriteLine($"sk = {sk}");
+
+            string eStr = ProtectedClass.EncryptString(sk, "1234-5678-9012-3456");
+
+            WriteLine(eStr);
+
+            WriteLine("=================================================");
+
+
+            string password = "Admin1234";
+            string hashed = ProtectedClass.toMD5(password);
+            string hashed2 = ProtectedClass.SaltAndHash(password);
+            string hashed3 = string.Empty;
+
+            using (SHA256 sha256Hash = SHA256.Create())
             {
-                new Circle { Color = "Red", Radius = 2.5 },
-                new Rectangle { Color = "Blue", Height = 20.0, Width = 10.0 },
-                new Circle { Color = "Green", Radius = 8 },
-                new Circle { Color = "Purple", Radius = 12.3 },
-                new Rectangle { Color = "Blue", Height = 45.0, Width = 18.0 }
-            };
+                hashed3 = ProtectedClass.GetHash(sha256Hash, password);
 
-            string xmlFile = "shapes.xml";
-
-            ToXmlFile(xmlFile, listOfShapes);
-
-            List<Shape> loadedShapesXml =
-                 FromXmlFile<List<Shape>>(xmlFile);
-
-
-            foreach (Shape item in loadedShapesXml)
-            {
-                WriteLine($"{item.GetType().Name} is {item.Color} and has an area of { item.Area}");
+                WriteLine($"The SHA256 hash of {password} is: {hashed3}.");
             }
+
+            string userPassword = "Admin1234";
+            string hashedUserPassword = ProtectedClass.toMD5(userPassword);
+            string hashedUserPassword2 = ProtectedClass.SaltAndHash(userPassword);
+
+            WriteLine(hashed);
+            WriteLine(hashed2);
+            WriteLine(hashed3);
+
+            if (hashed2.Equals(hashedUserPassword2))
+            {
+                WriteLine("signed in!!!");
+            }
+            else
+            {
+                WriteLine("Incorrect password!!!");
+            }
+
         }
 
         public static T FromXmlFile<T>(string file)
