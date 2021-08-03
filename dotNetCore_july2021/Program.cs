@@ -3,6 +3,7 @@ using Protector;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
@@ -31,12 +32,28 @@ namespace dotNetCore_july2021
 
 
     [Serializable()]
-    public class Employee
+    public class Employee : ISerializable
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public double Salary { get; set; }
+
+        public Employee() { }
+        public Employee(SerializationInfo info, StreamingContext context)
+        {
+            Id = (int)info.GetValue("Id", typeof(int));
+            FirstName = (string)info.GetValue("FirstName", typeof(string));
+            LastName = (string)info.GetValue("LastName", typeof(string));
+            Salary = (double)info.GetValue("Salary", typeof(double));
+        }
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Id", Id);
+            info.AddValue("FirstName", FirstName);
+            info.AddValue("LastName", LastName);
+            info.AddValue("Salary", Salary);
+        }
 
         public override string ToString()
         {
@@ -63,10 +80,6 @@ namespace dotNetCore_july2021
             {
                 BinaryFormatter bf = new BinaryFormatter();
 
-                //Employee employeeObj = new Employee { 
-                //    Id = 101, FirstName = "Mark", LastName = "Johnson", Salary = 1500
-                //};
-
                 bf.Serialize(st, employees);
             }
 
@@ -75,9 +88,12 @@ namespace dotNetCore_july2021
             {
                 BinaryFormatter bf = new BinaryFormatter();
 
-                Employee emp = (Employee)bf.Deserialize(st);
+                var list = (List<Employee>)bf.Deserialize(st);
 
-                WriteLine(emp);
+                foreach (var emp in list)
+                {
+                    WriteLine(emp);
+                }
             }
 
 
