@@ -1,4 +1,5 @@
 ﻿//using Newtonsoft.Json;
+using dotNetCore_july2021.DbModels;
 using Protector;
 using System;
 using System.Collections.Generic;
@@ -64,61 +65,16 @@ namespace dotNetCore_july2021
 
     class Program
     {
+        private static readonly salecoContext _context = new salecoContext();
+
         static void Main(string[] args)
         {
-            string binaryFile = "Employee.dat";
+            var products = _context.Products;
 
-            List<Employee> employees = new List<Employee>
+            foreach (var p in products)
             {
-                new Employee { Id = 101, FirstName = "Mark", LastName = "Johnson", Salary = 1850 },
-                new Employee { Id = 102, FirstName = "Lucy", LastName = "Doe", Salary = 1900 },
-                new Employee { Id = 103, FirstName = "Tracy", LastName = "Swanson", Salary = 2150 },
-                new Employee { Id = 104, FirstName = "John", LastName = "Hill", Salary = 2200 },
-            };
-
-            using (Stream st = File.Open(binaryFile, FileMode.Create))
-            {
-                BinaryFormatter bf = new BinaryFormatter();
-
-                bf.Serialize(st, employees);
+                WriteLine($"{p.PCode} {p.PDescript} {p.PInDate} {p.PPrice}");
             }
-
-
-            using (Stream st = File.Open(binaryFile, FileMode.Open))
-            {
-                BinaryFormatter bf = new BinaryFormatter();
-
-                var list = (List<Employee>)bf.Deserialize(st);
-
-                foreach (var emp in list)
-                {
-                    WriteLine(emp);
-                }
-            }
-
-
-
-                string xmlFile = "UnsecuredData.xml";
-            Customers obj = FromXmlFile<Customers>(xmlFile);
-
-            foreach (var c in obj.customers)
-            {
-                WriteLine(c.CardNumber + " " + c.Name);
-            }
-
-
-            List<Customer> custometsList = new List<Customer>
-            {
-                new Customer { Name = "Bob Smith", CardNumber = "1234-5678-9012-3456", Password = "Pa$$w0rd"},
-                new Customer { Name = "Lucy Smith", CardNumber = "9876-6543-1234-6541", Password = "123456"},
-            };
-
-            Customers obj2 = new Customers { 
-                customers = custometsList
-            };
-
-            ToXmlFile("customers2.xml", obj2);
-
 
         }
 
