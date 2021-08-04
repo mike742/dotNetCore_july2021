@@ -11,6 +11,8 @@ using System.Text;
 using System.Text.Json;
 using System.Xml.Serialization;
 using static System.Console;
+using System.Linq;
+
 
 namespace dotNetCore_july2021
 {
@@ -69,14 +71,20 @@ namespace dotNetCore_july2021
 
         static void Main(string[] args)
         {
-            var products = _context.Products;
+            var products = _context.Products.ToList();
 
             foreach (var p in products)
             {
                 WriteLine($"{p.PCode} {p.PDescript} {p.PInDate} {p.PPrice}");
             }
 
+            string xmlProducts = "products.xml";
+
+            ToXmlFile(xmlProducts, products);
+
         }
+
+
 
         public static T FromXmlFile<T>(string file)
         {
