@@ -13,6 +13,8 @@ using System.Xml.Serialization;
 using static System.Console;
 using System.Linq;
 using dotNetCore_july2021.DtoModels;
+using System.IO.Compression;
+using System.Xml;
 
 namespace dotNetCore_july2021
 {
@@ -100,6 +102,26 @@ namespace dotNetCore_july2021
             string binaryProductsDto = "productsDto.dat";
             ToBinaryFile(binaryProductsDto, productsDto);
 
+            List<SerializedFile> fileList = new List<SerializedFile>
+            {
+                new SerializedFile{
+                    Name = xmlProductsDto,
+                    Size = new FileInfo(xmlProductsDto).Length },
+                new SerializedFile{
+                    Name = jsonProductsDto,
+                    Size = new FileInfo(jsonProductsDto).Length },
+                new SerializedFile{
+                    Name = binaryProductsDto,
+                    Size = new FileInfo(binaryProductsDto).Length },
+            };
+
+            fileList.Sort();
+            int place = 1; 
+            foreach (var file in fileList)
+            {
+                WriteLine($"{place++}. {file.Name} : {file.Size} bytes");
+            }
+
         }
 
         public static void ToBinaryFile<T>(string file, T obj)
@@ -130,9 +152,9 @@ namespace dotNetCore_july2021
 
         public static void ToXmlFile<T>(string file, T obj)
         {
-            using (StringWriter sw = 
-                new StringWriter( new StringBuilder() ))
-            { 
+            using (StringWriter sw =
+                new StringWriter(new StringBuilder()))
+            {
                 XmlSerializer xmls = new XmlSerializer(typeof(T));
                 xmls.Serialize(sw, obj);
                 File.WriteAllText(file, sw.ToString());
