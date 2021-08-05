@@ -12,7 +12,7 @@ using System.Text.Json;
 using System.Xml.Serialization;
 using static System.Console;
 using System.Linq;
-
+using dotNetCore_july2021.DtoModels;
 
 namespace dotNetCore_july2021
 {
@@ -72,19 +72,50 @@ namespace dotNetCore_july2021
         static void Main(string[] args)
         {
             var products = _context.Products.ToList();
+            var productsDto = new List<ProductDto>();
 
             foreach (var p in products)
             {
-                WriteLine($"{p.PCode} {p.PDescript} {p.PInDate} {p.PPrice}");
+                ProductDto prod = new ProductDto
+                {
+                    PCode = p.PCode,
+                    PDescript = p.PDescript,
+                    PDiscount = p.PDiscount,
+                    PInDate = p.PInDate,
+                    PMin = p.PMin,
+                    PPrice = p.PPrice,
+                    PQoh = p.PQoh,
+                    VCode = p.VCode
+                };
+                productsDto.Add(prod);
             }
 
-            string xmlProducts = "products.xml";
 
-            ToXmlFile(xmlProducts, products);
+            string xmlProductsDto = "productsDto.xml";
+            ToXmlFile(xmlProductsDto, productsDto);
+
+            string jsonProductsDto = "productsDto.json";
+            ToJsonFile(jsonProductsDto, productsDto);
+
+            string binaryProductsDto = "productsDto.dat";
+            ToBinaryFile(binaryProductsDto, productsDto);
 
         }
 
+        public static void ToBinaryFile<T>(string file, T obj)
+        {
+            using (Stream st = File.Open(file, FileMode.Create))
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                bf.Serialize(st, obj);
+            }
+        }
 
+        public static void ToJsonFile<T>(string file, T obj)
+        {
+            string json = JsonSerializer.Serialize(obj);
+            File.WriteAllText(file, json);
+        }
 
         public static T FromXmlFile<T>(string file)
         {
