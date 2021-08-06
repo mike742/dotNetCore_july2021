@@ -1,127 +1,70 @@
 ﻿//using Newtonsoft.Json;
 using dotNetCore_july2021.DbModels;
-using Protector;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Xml.Serialization;
 using static System.Console;
 using System.Linq;
-using dotNetCore_july2021.DtoModels;
-using System.IO.Compression;
-using System.Xml;
 
 namespace dotNetCore_july2021
 {
-    public class Customer
-    {
-        [XmlElement("name")]
-        public string Name { get; set; }
-        [XmlElement("creditcard")]
-        public string CardNumber { get; set; }
-        [XmlElement("password")]
-        public string Password { get; set; }
-    }
-
-    [XmlRoot("customers")]
-    public class Customers
-    {
-        [XmlElement("customer")]
-        public List<Customer> customers { get; set; }
-    }
-
-
-    [Serializable()]
-    public class Employee : ISerializable
-    {
-        public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public double Salary { get; set; }
-
-        public Employee() { }
-        public Employee(SerializationInfo info, StreamingContext context)
-        {
-            Id = (int)info.GetValue("Id", typeof(int));
-            FirstName = (string)info.GetValue("FirstName", typeof(string));
-            LastName = (string)info.GetValue("LastName", typeof(string));
-            Salary = (double)info.GetValue("Salary", typeof(double));
-        }
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("Id", Id);
-            info.AddValue("FirstName", FirstName);
-            info.AddValue("LastName", LastName);
-            info.AddValue("Salary", Salary);
-        }
-
-        public override string ToString()
-        {
-            return $"{Id} {FirstName} {LastName} {Salary}";
-        }
-    }
-
-
     class Program
     {
         private static readonly salecoContext _context = new salecoContext();
 
         static void Main(string[] args)
         {
-            var products = _context.Products.ToList();
-            var productsDto = new List<ProductDto>();
+            var customers = _context.Customers.ToList();
+            int? areaCode = 615;
+            List<Customer> filteredCustomers = new List<Customer>();
 
-            foreach (var p in products)
+            foreach (var cus in customers)
             {
-                ProductDto prod = new ProductDto
+                if (cus.CusAreaCode == areaCode)
                 {
-                    PCode = p.PCode,
-                    PDescript = p.PDescript,
-                    PDiscount = p.PDiscount,
-                    PInDate = p.PInDate,
-                    PMin = p.PMin,
-                    PPrice = p.PPrice,
-                    PQoh = p.PQoh,
-                    VCode = p.VCode
-                };
-                productsDto.Add(prod);
+                    filteredCustomers.Add(cus);
+                }
+            }
+
+            foreach (var cus in filteredCustomers)
+            {
+                WriteLine($"{cus.CusCode} {cus.CusFName} {cus.CusLName} {cus.CusAreaCode}");
             }
 
 
-            string xmlProductsDto = "productsDto.xml";
-            ToXmlFile(xmlProductsDto, productsDto);
+            int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            long[] numbers2 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-            string jsonProductsDto = "productsDto.json";
-            ToJsonFile(jsonProductsDto, productsDto);
+            var res2 = numbers2.Where(c => c % 2 == 0);
 
-            string binaryProductsDto = "productsDto.dat";
-            ToBinaryFile(binaryProductsDto, productsDto);
+            WriteLine(string.Join(", ", res2));
 
-            List<SerializedFile> fileList = new List<SerializedFile>
+            IEnumerable<int> res3 = from n in numbers
+                       where n % 2 != 0
+                       select n;
+
+            WriteLine(string.Join(", ", res3));
+
+
+            //var filteredCustomers2 = customers.Where(TakeByAreaCode);
+            //var filteredCustomers2 = 
+            //    customers.Where( delegate(Customer c) { return c.CusAreaCode == 615;  } );
+            // var filteredCustomers2 = customers.Where((Customer c) => c.CusAreaCode == 615);
+            var filteredCustomers2 = customers.Where(c => c.CusAreaCode == areaCode);
+
+            foreach (var cus in filteredCustomers2)
             {
-                new SerializedFile{
-                    Name = xmlProductsDto,
-                    Size = new FileInfo(xmlProductsDto).Length },
-                new SerializedFile{
-                    Name = jsonProductsDto,
-                    Size = new FileInfo(jsonProductsDto).Length },
-                new SerializedFile{
-                    Name = binaryProductsDto,
-                    Size = new FileInfo(binaryProductsDto).Length },
-            };
-
-            fileList.Sort();
-            int place = 1; 
-            foreach (var file in fileList)
-            {
-                WriteLine($"{place++}. {file.Name} : {file.Size} bytes");
+                WriteLine($"{cus.CusCode} {cus.CusFName} {cus.CusLName} {cus.CusAreaCode}");
             }
+        }
 
+        public static bool TakeByAreaCode(Customer c)
+        {
+            return c.CusAreaCode == 615;
         }
 
         public static void ToBinaryFile<T>(string file, T obj)
