@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Xml.Serialization;
 using static System.Console;
 using System.Linq;
+using dotNetCore_july2021.DtoModels;
 
 namespace dotNetCore_july2021
 {
@@ -60,6 +61,51 @@ namespace dotNetCore_july2021
             {
                 WriteLine($"{cus.CusCode} {cus.CusFName} {cus.CusLName} {cus.CusAreaCode}");
             }
+
+            var customerNames = customers
+                .Where(c => c.CusAreaCode == areaCode)
+                .Select(c => c.CusFName + " " + c.CusLName);
+
+            WriteLine(string.Join(", ", customerNames));
+
+            var areaCodes = customers
+                .Select(c => c.CusAreaCode)
+                .Distinct();
+
+            WriteLine(string.Join(", ", areaCodes));
+
+            /*
+            var productsDto = new List<ProductDto>();
+
+            foreach (var p in products)
+            {
+                ProductDto prod = new ProductDto
+                {
+                    PCode = p.PCode,
+                    PDescript = p.PDescript,
+                    PDiscount = p.PDiscount,
+                    PInDate = p.PInDate,
+                    PMin = p.PMin,
+                    PPrice = p.PPrice,
+                    PQoh = p.PQoh,
+                    VCode = p.VCode
+                };
+                productsDto.Add(prod);
+            }
+            */
+
+            var products = _context.Products.ToList();
+
+            var productsDto = products.Select(p => new ProductDto { 
+                PCode = p.PCode,
+                PDescript = p.PDescript,
+                PDiscount = p.PDiscount,
+                PInDate = p.PInDate,
+                PMin = p.PMin,
+                PPrice = p.PPrice,
+                PQoh = p.PQoh,
+                VCode = p.VCode
+            });
         }
 
         public static bool TakeByAreaCode(Customer c)
